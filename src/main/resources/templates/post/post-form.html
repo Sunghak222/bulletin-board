@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Post</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+
+<div class="card p-4 shadow">
+    <h2 class="mb-4" th:text="${post.id != null} ? 'Edit Post' : 'Create Post'">Create Post</h2>
+
+    <form th:action="@{${actionUrl}}" method="post" th:object="${post}">
+
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" id="title" th:field="*{title}" class="form-control" placeholder="Enter post title" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea id="content" th:field="*{content}" class="form-control" rows="10" placeholder="Write your content here..." required></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a th:href="@{/posts}" class="btn btn-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

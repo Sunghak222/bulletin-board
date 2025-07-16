@@ -1,0 +1,18 @@
+<!-- templates/fragments/comment-edit-form.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<!-- Comment edit form fragment -->
+<div th:fragment="editForm(comment, postId)">
+    <form th:action="@{'/posts/' + ${postId} + '/comments/' + ${comment.id} + '/edit'}" method="post" class="mb-3">
+        <textarea class="form-control mb-2" name="content" rows="2" required
+                  th:text="${comment.content}">Original comment content</textarea>
+        <button type="submit" class="btn btn-sm btn-primary me-2">Update</button>
+        <a th:href="@{'/posts/' + ${postId}}" class="btn btn-sm btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>

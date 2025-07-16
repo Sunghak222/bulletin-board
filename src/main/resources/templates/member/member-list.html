@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Members</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container mt-4">
+
+<h2 class="mb-4">Member List</h2>
+
+<!-- Member table -->
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="member : ${members}">
+        <td th:text="${member.name}">Name</td>
+        <td th:text="${member.email}">Email</td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- Link back to post list -->
+<a class="btn btn-link" th:href="@{/posts}">Back to Posts</a>
+
+</body>
+</html>

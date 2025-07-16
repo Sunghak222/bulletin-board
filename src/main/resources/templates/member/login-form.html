@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body class="container mt-5">
+<!-- Top Navigation -->
+<div class="d-flex justify-content-start mb-4">
+    <a class="btn btn-outline-primary" th:href="@{/posts}">Home</a>
+</div>
+
+<!-- Centered Form -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <!-- Error message -->
+        <p th:if="${loginError}" th:text="${loginError}" class="text-danger fw-bold text-center"></p>
+
+        <form th:action="@{/members/login}" method="post">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" name="email" id="email" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" name="password" id="password" class="form-control" required>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+
+        <!-- Registration link -->
+        <p class="mt-3">
+            <a th:href="@{/members/register}" class="btn btn-outline-secondary w-100">Register</a>
+        </p>
+    </div>
+</div>
+</body>
+</html>

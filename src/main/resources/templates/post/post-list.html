@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Posts</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body class="container mt-4">
+
+<!-- Upper Navigation -->
+<nav class="d-flex justify-content-between mb-4">
+    <div>
+        <a class="btn btn-outline-primary me-2" th:href="@{/posts}">Home</a>
+        <a class="btn btn-outline-primary" th:href="@{/members}">Member List</a>
+    </div>
+    <div>
+        <!-- Conditional Rendering for Login/Register or Logout -->
+        <div th:if="${session.loginMember == null}">
+            <a class="btn btn-outline-secondary me-2" th:href="@{/members/login}">Login</a>
+            <a class="btn btn-outline-secondary" th:href="@{/members/register}">Register</a>
+        </div>
+        <div th:if="${session.loginMember != null}">
+            <form th:action="@{/members/logout}" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-danger">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Search & Post Button -->
+<div class="d-flex justify-content-end align-items-center mb-4 gap-2">
+    <form th:action="@{/post/search}" method="get" class="w-50">
+        <div class="input-group">
+            <input type="text" name="keyword" class="form-control" placeholder="Search...">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+
+    <a class="btn btn-outline-success" th:href="@{/posts/new}">
+        <i class="fas fa-pen-to-square"></i> Write
+    </a>
+</div>
+
+
+<!-- Post List -->
+<table class="table table-bordered">
+    <thead class="table-light">
+    <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Created At</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${posts}">
+        <td>
+            <a th:href="@{'/posts/' + ${post.id}}" th:text="${post.title}">Post Title</a>
+        </td>
+        <td th:text="${post.author?.name} ?: 'Unknown'">Author</td>
+        <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}">2025-07-10</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
