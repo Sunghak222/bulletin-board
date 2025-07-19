@@ -1,7 +1,6 @@
 package com.sunghak.board.controller;
 
 import com.sunghak.board.dto.CommentCreateRequest;
-import com.sunghak.board.dto.CommentDeleteRequest;
 import com.sunghak.board.dto.CommentUpdateRequest;
 import com.sunghak.board.dto.SessionMember;
 import com.sunghak.board.entity.Comment;
@@ -25,9 +24,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class CommentController {
     // 댓글의 CRUD 는 여기서, 댓글의 list는 PostController에서
 
-    @Autowired private MemberService memberService;
-    @Autowired private PostService postService;
-    @Autowired private CommentService commentService;
+    private final MemberService memberService;
+    private final PostService postService;
+    private final CommentService commentService;
+
+    public CommentController(MemberService memberService, PostService postService, CommentService commentService) {
+        this.memberService = memberService;
+        this.postService = postService;
+        this.commentService = commentService;
+    }
 
     @PostMapping
     public String createComment(@PathVariable Long postId, HttpSession session,
@@ -77,17 +82,17 @@ public class CommentController {
 
         return "redirect:/posts/" + comment.getPost().getId();
     }
-    @PostMapping("/delete")
-    public String deleteComment(@PathVariable Long postId, HttpSession session,
-                                @ModelAttribute CommentDeleteRequest commentDeleteRequest) {
+    @PostMapping("/{commentId}/delete")
+    public String deleteComment(@PathVariable Long postId, @PathVariable Long commentId,
+                                HttpSession session) {
         Post post = postService.findById(postId);
-        Comment comment = commentService.findById(commentDeleteRequest.getCommentId());
+        Comment comment = commentService.findById(commentId);
         SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
         if (loginMember == null || !loginMember.getId().equals(comment.getAuthor().getId())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete this comment");
         }
 
-        commentService.delete(commentDeleteRequest.getCommentId());
+        commentService.delete(commentId);
         return "redirect:/posts/" + postId;
     }
 }

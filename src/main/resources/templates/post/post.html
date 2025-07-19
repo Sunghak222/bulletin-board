@@ -52,7 +52,7 @@
     <h5 th:if="${#lists.size(comments) == 0}" class="mb-4 text-muted">No comments yet.</h5>
 
     <!-- Comment List -->
-    <div th:each="comment : ${comments}" class="mb-3 pb-3 border-bottom">
+    <div th:each="comment : ${comments}" class="mb-3 pb-3 border-bottom position-relative">
 
         <!-- Case 1: Editing comment owned by the logged-in user -->
         <div th:if="${comment.id == editingCommentId and session.loginMember != null and session.loginMember.id == comment.author?.id}">
@@ -66,11 +66,13 @@
                 <strong th:text="${comment.author?.name}">Author</strong> ·
                 <span th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}">Created At</span>
             </small>
-            <div class="mt-1">
-                <a th:href="@{'/posts/' + ${post.id} + '?edit=' + ${comment.id}}" class="btn btn-sm btn-link">Edit</a>
-                <form th:action="@{'/posts/' + ${post.id} + '/comments/delete'}" method="post" style="display: inline;">
+
+            <!-- Right-aligned small buttons -->
+            <div class="position-absolute top-0 end-0">
+                <a th:href="@{'/posts/' + ${post.id} + '?edit=' + ${comment.id}}" class="btn btn-sm btn-outline-secondary me-1 px-2 py-0">Edit</a>
+                <form th:action="@{'/posts/' + ${post.id} + '/comments/delete'}" method="post" class="d-inline">
                     <input type="hidden" name="commentId" th:value="${comment.id}" />
-                    <button type="submit" class="btn btn-sm btn-link text-danger">Delete</button>
+                    <button type="submit" class="btn btn-sm btn-outline-danger px-2 py-0">Delete</button>
                 </form>
             </div>
         </div>
@@ -85,9 +87,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 </body>
 </html>

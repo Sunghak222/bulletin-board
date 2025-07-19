@@ -23,4 +23,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByAuthorAndContent(Member author, String content);
 
     List<Post> findByAuthorAndTitleAndContent(Member author, String title, String content);
+
+    List<Post> findByTitleContaining(String title);
+    List<Post> findByContentContaining(String content);
+    List<Post> findByAuthorContaining(Member author);
+    List<Post> findByTitleContainingAndContentContaining(String title, String content);
+    List<Post> findByAuthorContainingAndTitleContaining(String author, String title);
+    List<Post> findByAuthorContainingAndContentContaining(String author, String content);
+    List<Post> findByAuthorContainingAndTitleContainingAndContentContaining(String author, String title, String content);
 }
