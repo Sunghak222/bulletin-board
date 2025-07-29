@@ -1,6 +1,7 @@
 Bulletin Board Project
 
-This project is to learn Springboot. Frontend used Thymeleaf and rendered at server-side by Springboot. All works at Frontends are done by ChatGPT.
+This individual project is to learn Springboot. Frontend used Thymeleaf and rendered at server-side by Springboot. All works at Frontends are done by ChatGPT.
+h2 is used for database for easy testing.
 
 ## Tech
 - Frontend: HTML, CSS
