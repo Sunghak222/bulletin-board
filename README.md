@@ -1,7 +1,12 @@
 Bulletin Board Project
 
-This project is to learn Springboot.
+This project is to learn Springboot. Frontend used Thymeleaf and rendered at server-side by Springboot. All works at Frontends are done by ChatGPT.
 
+## Tech
+- Frontend: HTML, CSS
+- Backend: Java Springboot
+- Database: h2
+  
 ## What to prepare
 - At least Java 17 version
 - 
