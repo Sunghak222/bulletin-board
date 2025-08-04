@@ -1,6 +1,7 @@
 package com.sunghak.board.apicontroller;
 
 import com.sunghak.board.dto.PostCreateRequest;
+import com.sunghak.board.dto.PostDTO;
 import com.sunghak.board.dto.PostUpdateRequest;
 import com.sunghak.board.dto.SessionMember;
 import com.sunghak.board.entity.Comment;
@@ -38,7 +39,8 @@ public class PostApiController {
 
     @GetMapping("")
     public ResponseEntity<Map<String, Object>> list() {
-        List<Post> posts = postService.findAll();
+        List<Post> findPosts = postService.findAll();
+        List<PostDTO> posts = findPosts.stream().map(PostDTO::new).toList();
         Map<String, Object> response = new HashMap<>();
 
         response.put("status", "success");
@@ -50,6 +52,14 @@ public class PostApiController {
     public ResponseEntity<Map<String, String>> createPost(@RequestBody PostCreateRequest request, HttpSession session) {
 
         SessionMember loginSessionMember = (SessionMember) session.getAttribute("loginMember");
+
+        Map<String, String> response = new HashMap<>();
+        if (loginSessionMember == null) {
+            response.put("status", "fail");
+            response.put("error", "You do not have permission to create post");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+
         Member loginMember = memberService.findById(loginSessionMember.getId());
 
         Post post = new Post();
@@ -59,7 +69,6 @@ public class PostApiController {
 
         postService.save(post);
 
-        Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         response.put("message", "Post Created");
         return ResponseEntity.ok(response);
@@ -67,12 +76,21 @@ public class PostApiController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Map<String, Object>> post(@PathVariable Long postId) {
-        Post post = postService.findById(postId);
-
         Map<String, Object> response = new HashMap<>();
 
+        Post post = postService.findById(postId);
+        if (post == null) {
+            response.put("status", "error");
+            response.put("error", "Post Not Found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        PostDTO postDto = new PostDTO(post);
+
+
+
         response.put("status", "success");
-        response.put("post", post);
+        response.put("post", postDto);
         return ResponseEntity.ok(response);
     }
 
@@ -118,7 +136,7 @@ public class PostApiController {
         postService.delete(postId);
 
         response.put("status", "success");
-        response.put("message", "Post deleted successfully"); // Changed
+        response.put("message", "Post deleted successfully");
         return ResponseEntity.ok(response);
     }
 }

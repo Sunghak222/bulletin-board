@@ -87,4 +87,20 @@ public class MemberApiController {
         response.put("message", "Logout successful");
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<Map<String, Object>> getLoggedInMember(HttpSession session) {
+        SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
+        Map<String, Object> response = new HashMap<>();
+        if (loginMember == null) {
+            response.put("status", "error");
+            response.put("message", "No one logged in");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        }
+        else {
+            response.put("status", "success");
+            response.put("loginMember", loginMember);
+        }
+        return ResponseEntity.ok(response);
+    }
 }

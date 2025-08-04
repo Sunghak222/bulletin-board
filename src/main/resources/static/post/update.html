@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Post - MyBoard</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/post/home.html">MyBoard</a>
+    </div>
+</nav>
+
+<div class="container py-5">
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h2 class="card-title mb-4">Update Post</h2>
+
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" id="title" class="form-control" placeholder="Enter post title">
+            </div>
+
+            <div class="mb-3">
+                <label for="content" class="form-label">Content</label>
+                <textarea id="content" class="form-control" rows="6" placeholder="Write your content here..."></textarea>
+            </div>
+
+            <button id="updateBtn" class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { loadPostData, bindUpdateButton } from '/js/post/update.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const postId = params.get("id");
+
+    loadPostData(postId);
+    bindUpdateButton(postId);
+</script>
+</body>
+</html>

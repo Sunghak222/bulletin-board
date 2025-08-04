@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Post Detail - MyBoard</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/post/home.html">MyBoard</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <div id="auth-buttons" class="d-flex gap-2"></div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div id="post-section" class="mb-5"></div>
+
+    <div id="comment-section" class="mb-4">
+        <h4 class="mb-3">Comments</h4>
+        <div id="comment-form" class="mb-5">
+            <h4>Add a Comment</h4>
+            <div class="mb-3">
+                <textarea id="comment-content" class="form-control" rows="3" placeholder="Write your comment here   "></textarea>
+            </div>
+            <button id="comment-submit" class="btn btn-primary">Write</button>
+        </div>
+
+        <ul id="comment-list" class="list-group px-1"></ul>
+
+    </div>
+
+    <div class="text-end">
+        <a href="/post/home.html" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+
+<script type="module">
+    import { updateAuthButtons } from '/js/auth/auth.js';
+    import { displayPost } from '/js/post/post-detail.js';
+    import { displayCommentList } from '/js/comment/comment-list.js';
+    import { createComment } from '/js/comment/create.js';
+
+    const commentSubmitButton = document.getElementById('comment-submit');
+    commentSubmitButton.addEventListener('click', createComment);
+
+    updateAuthButtons();
+    displayPost();
+    displayCommentList();
+
+</script>
+
+</body>
+</html>

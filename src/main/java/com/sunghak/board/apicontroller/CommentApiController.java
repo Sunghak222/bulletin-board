@@ -1,6 +1,7 @@
 package com.sunghak.board.apicontroller;
 
 import com.sunghak.board.dto.CommentCreateRequest;
+import com.sunghak.board.dto.CommentDTO;
 import com.sunghak.board.dto.CommentUpdateRequest;
 import com.sunghak.board.dto.SessionMember;
 import com.sunghak.board.entity.Comment;
@@ -18,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@RequestMapping("api/")
+@RequestMapping("/api")
 @RestController
 public class CommentApiController {
 
@@ -36,12 +38,12 @@ public class CommentApiController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<Map<String, String>> createComment(@RequestBody CommentCreateRequest request,
+    public ResponseEntity<Map<String, Object>> createComment(@RequestBody CommentCreateRequest request,
                                                              @PathVariable Long postId,
                                                              HttpSession session) {
 
         SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
-        Map<String, String> response = new HashMap<>();
+        Map<String, Object> response = new HashMap<>();
 
         if (loginMember == null) {
             response.put("status", "error");
@@ -58,20 +60,32 @@ public class CommentApiController {
         comment.setAuthor(member);
 
         commentService.save(comment);
+        CommentDTO commentDTO = new CommentDTO(comment);
 
         response.put("status", "success");
         response.put("message", "Comment Created Successfully");
+        response.put("comment", commentDTO);
         return ResponseEntity.ok(response);
     }
 
     @PutMapping("/comments/{commentId}")
     public ResponseEntity<Map<String, String>> editComment(@PathVariable Long commentId,
-                              @RequestBody CommentUpdateRequest commentUpdateRequest) {
+                              @RequestBody CommentUpdateRequest commentUpdateRequest,
+                                                           HttpSession session) {
         Comment comment = commentService.findById(commentId);
+        SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
+
+        Map<String, String> response = new HashMap<>();
+
+        if (loginMember == null || !loginMember.getId().equals(comment.getAuthor().getId())) {
+            response.put("status", "error");
+            response.put("error", "You do not have permission to edit this comment");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        }
+
         comment.setContent(commentUpdateRequest.getContent());
         commentService.save(comment);
 
-        Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         response.put("message", "Comment Updated successfully");
         return ResponseEntity.ok(response);
@@ -94,6 +108,19 @@ public class CommentApiController {
         commentService.delete(commentId);
         response.put("status", "success");
         response.put("message", "Comment deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/posts/{postId}/comments")
+    public ResponseEntity<Map<String, Object>> getCommentsByPost(@PathVariable Long postId) {
+        List<Comment> comments = commentService.findByPostId(postId);
+        List<CommentDTO> result = comments.stream()
+                .map(CommentDTO::new)
+                .toList();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("comments", result);
         return ResponseEntity.ok(response);
     }
 }

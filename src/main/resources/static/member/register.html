@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Register - MyBoard</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center mb-4">Register</h2>
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Username</label>
+            <input type="text" id="name" class="form-control" placeholder="Enter your name">
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" id="email" class="form-control" placeholder="Enter your email">
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter password">
+        </div>
+
+        <div class="d-grid">
+            <button id="registerBtn" class="btn btn-primary">Register</button>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="/post/home.html" class="text-decoration-none">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { register } from '/js/member/register.js';
+    document.getElementById('registerBtn').addEventListener('click', register);
+</script>
+
+</body>
+</html>

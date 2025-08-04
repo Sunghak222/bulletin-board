@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - MyBoard</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <h2 class="text-center mb-4">Login</h2>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" id="email" class="form-control" placeholder="Enter email">
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-control" placeholder="Enter password">
+        </div>
+
+        <div class="d-grid">
+            <button id="loginBtn" class="btn btn-primary">Login</button>
+        </div>
+
+        <div class="text-center mt-3">
+            <a href="/post/home.html" class="text-decoration-none">Back to Home</a>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { login } from '/js/member/login.js';
+    document.getElementById('loginBtn').addEventListener('click', login);
+</script>
+
+</body>
+</html>
