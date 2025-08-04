@@ -29,14 +29,36 @@ A simple Spring Boot-based web bulletin board application supporting post creati
 ```plaintext
 src
 └── main
-    └── java
-        └── com.example.board
-            ├── controller
-            ├── domain
-            ├── dto
-            ├── repository
-            └── service
+    ├── java
+    │   └── com.sunghak.board
+    │       ├── apicontroller
+    │       │   ├── CommentApiController
+    │       │   ├── MemberApiController
+    │       │   └── PostApiController
+    │       ├── controller
+    │       │   ├── CommentController
+    │       │   ├── HomeController
+    │       │   ├── MemberController
+    │       │   └── PostController
+    │       ├── dto
+    │       │   ├── *Request, *DTO, SessionMember
+    │       ├── entity
+    │       │   ├── BaseTimeEntity, Comment, Member, Post
+    │       ├── exception
+                ├──GlobalExceptionHandler
+    │       ├── repository
+    │       │   ├── *Repository interfaces
+    │       ├── service
+    │       │   ├── *Service interfaces & *ServiceImpl classes
+    │       └── BoardApplication
+    └── resources
+        ├── static
+        │   ├── css/
+        │   ├── js/
+        │   └── member/, post/, comment/
+        └── application.properties
 ```
+
 
 ## Getting Started
 
