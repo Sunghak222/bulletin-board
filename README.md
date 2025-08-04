@@ -41,29 +41,33 @@ src
 ## Getting Started
 
 1. Clone the repository:
+   ```bash
    git clone https://github.com/yourusername/bulletin-board.git
    cd bulletin-board
+   ```
 
-3. Open the project in **IntelliJ IDEA**.
+2. Open the project in **IntelliJ IDEA**.
 
-4. Make sure the project has the correct dependencies in `build.gradle`:
-
+3. Make sure the project has the correct dependencies in `build.gradle`:
+   ```gradle
    implementation 'com.h2database:h2'
+   ```
 
    > No need to install H2 separately. It will be downloaded automatically via Gradle.
 
-5. The project uses an **H2 file-based database** located at:
-   
+4. The project uses an **H2 file-based database** located at:
+   ```
    ~/boarddb.mv.db
-   
+   ```
    - This file will be automatically created in the **home directory** of your system (e.g., `/Users/yourname/boarddb.mv.db` on macOS/Linux, `C:\Users\yourname\boarddb.mv.db` on Windows).
    - You do **not** need to manually create or download it.
 
-7. The `application.properties` is located in:
-   
+5. The `application.properties` is located in:
+   ```
    src/main/resources/application.properties
+   ```
    and includes the following H2 settings:
-   
+   ```properties
    spring.datasource.url=jdbc:h2:tcp://localhost/~/boarddb
    spring.datasource.driver-class-name=org.h2.Driver
    spring.datasource.username=sa
@@ -71,12 +75,13 @@ src
 
    spring.h2.console.enabled=true
    spring.h2.console.path=/h2-console
+   ```
 
-9. Run the application:
+6. Run the application:
    - In IntelliJ, open `Application.java`
    - Right-click and select **Run 'Application.main()'**
 
-10. Open your browser and access the H2 database console:
+7. Open your browser and access the H2 database console:
    ```
    http://localhost:8080/h2-console
    ```
@@ -85,7 +90,7 @@ src
    - **User Name**: `sa`
    - **Password**: *(leave blank)*
 
-11. (Optional) You can also run the application from the command line:
+8. (Optional) You can also run the application from the command line:
    ```bash
    ./gradlew bootRun
    ```
