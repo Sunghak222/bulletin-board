@@ -1,13 +1,95 @@
-Bulletin Board Project
+# Bulletin Board Project
 
-This project is to learn Springboot.
+A simple Spring Boot-based web bulletin board application supporting post creation, editing, deletion, and comments with login functionality.
 
-## What to prepare
-- At least Java 17 version
-- 
-## How to run
-1. git clone https://github.com/Sunghak222/bulletin-board
-2. Run BoardApplication.java
-3. Download h2 database at https://h2database.com/html/download.html
-4. Run h2
-5. Open http://localhost:8080/posts at your browser
+## Features
+
+- User registration / login / logout
+- Create, read, update, delete posts
+- Write, edit, delete comments
+- Only authenticated users can write posts
+- Only the author can edit or delete their content
+- Input validation and exception handling
+- RESTful API structure (or standard MVC-based architecture)
+
+## Tech Stack
+
+- Backend: Spring Boot, Spring MVC, JPA (Hibernate)
+- Frontend: HTML, CSS, JavaScript
+- Database: h2
+- Build Tool: Gradle (or Maven)
+
+## Member
+
+- HEO Sunghak: Built Backend API Server, Frontend except for CSS and design, and database h2.
+- ChatGPT: Supported with CSS and design, UI.
+  
+## Project Structure
+
+```plaintext
+src
+└── main
+    └── java
+        └── com.example.board
+            ├── controller
+            ├── domain
+            ├── dto
+            ├── repository
+            └── service
+```
+
+## Getting Started
+
+1. Clone the repository:
+   git clone https://github.com/yourusername/bulletin-board.git
+   cd bulletin-board
+
+3. Open the project in **IntelliJ IDEA**.
+
+4. Make sure the project has the correct dependencies in `build.gradle`:
+
+   implementation 'com.h2database:h2'
+
+   > No need to install H2 separately. It will be downloaded automatically via Gradle.
+
+5. The project uses an **H2 file-based database** located at:
+   
+   ~/boarddb.mv.db
+   
+   - This file will be automatically created in the **home directory** of your system (e.g., `/Users/yourname/boarddb.mv.db` on macOS/Linux, `C:\Users\yourname\boarddb.mv.db` on Windows).
+   - You do **not** need to manually create or download it.
+
+7. The `application.properties` is located in:
+   
+   src/main/resources/application.properties
+   and includes the following H2 settings:
+   
+   spring.datasource.url=jdbc:h2:tcp://localhost/~/boarddb
+   spring.datasource.driver-class-name=org.h2.Driver
+   spring.datasource.username=sa
+   spring.datasource.password=
+
+   spring.h2.console.enabled=true
+   spring.h2.console.path=/h2-console
+
+9. Run the application:
+   - In IntelliJ, open `Application.java`
+   - Right-click and select **Run 'Application.main()'**
+
+10. Open your browser and access the H2 database console:
+   ```
+   http://localhost:8080/h2-console
+   ```
+   Use the following credentials:
+   - **JDBC URL**: `jdbc:h2:tcp://localhost/~/boarddb`
+   - **User Name**: `sa`
+   - **Password**: *(leave blank)*
+
+11. (Optional) You can also run the application from the command line:
+   ```bash
+   ./gradlew bootRun
+   ```
+
+## Purpose
+
+This project was built to practice backend development using Spring Boot, focusing on understanding MVC patterns, REST APIs, authentication, and CRUD operations.
