@@ -94,6 +94,20 @@ src
    ```bash
    ./gradlew bootRun
    ```
+   
+9. Open your browser and access the application at:
+   ```
+   http://localhost:8080/
+   ```
+   
+10. To access the H2 database console, go to:
+   ```
+   http://localhost:8080/h2-console
+   ```
+   Use the following credentials:
+   - **JDBC URL**: `jdbc:h2:tcp://localhost/~/boarddb`
+   - **User Name**: `sa`
+   - **Password**: *(leave blank)*
 
 ## Purpose
 
