@@ -1,10 +1,9 @@
 # Bulletin Board Project
 
 A simple Spring Boot-based web bulletin board application supporting post creation, editing, deletion, and comments with login functionality.
-
-## Features
 <img width="1512" height="822" alt="main" src="https://github.com/user-attachments/assets/878f4bdd-e609-4d58-8397-3a043afc7d80" />
 
+## Features
 - User registration / login / logout
 - Create, read, update, delete posts
 - Write, edit, delete comments
