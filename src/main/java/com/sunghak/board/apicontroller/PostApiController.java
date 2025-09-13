@@ -4,11 +4,10 @@ import com.sunghak.board.dto.PostCreateRequest;
 import com.sunghak.board.dto.PostDTO;
 import com.sunghak.board.dto.PostUpdateRequest;
 import com.sunghak.board.dto.SessionMember;
-import com.sunghak.board.entity.Comment;
-import com.sunghak.board.entity.Member;
-import com.sunghak.board.entity.Post;
+import com.sunghak.board.entity.*;
 import com.sunghak.board.service.CommentService;
 import com.sunghak.board.service.MemberService;
+import com.sunghak.board.service.PostReactionService;
 import com.sunghak.board.service.PostService;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +28,12 @@ public class PostApiController {
 
     private final MemberService memberService;
     private final PostService postService;
-    private final CommentService commentService;
+    private final PostReactionService postReactionService;
 
-    public PostApiController(PostService postService, MemberService memberService, CommentService commentService) {
-        this.postService = postService;
+    public PostApiController(MemberService memberService, PostService postService, PostReactionService postReactionService) {
         this.memberService = memberService;
-        this.commentService = commentService;
+        this.postService = postService;
+        this.postReactionService = postReactionService;
     }
 
     @GetMapping("")
@@ -75,22 +74,28 @@ public class PostApiController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Map<String, Object>> post(@PathVariable Long postId) {
+    public ResponseEntity<Map<String, Object>> post(@PathVariable Long postId, HttpSession session) {
         Map<String, Object> response = new HashMap<>();
 
-        Post post = postService.findById(postId);
-        if (post == null) {
+        String key = "viewed_post_" + postId;
+        boolean hasSession = (session.getAttribute(key) == null);
+        if (hasSession) session.setAttribute(key, Boolean.TRUE);
+
+        PostDTO postDto = postService.getDetailAndMaybeIncrementViews(postId, hasSession);
+        ReactionCount rc = postReactionService.count(postId);
+
+        if (postDto == null) {
             response.put("status", "error");
             response.put("error", "Post Not Found");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
 
-        PostDTO postDto = new PostDTO(post);
-
-
-
         response.put("status", "success");
         response.put("post", postDto);
+        response.put("reactions", Map.of(
+                "likeCount", rc.getLikes(),
+                "dislikeCount", rc.getDislikes()
+        ));
         return ResponseEntity.ok(response);
     }
 
@@ -138,5 +143,40 @@ public class PostApiController {
         response.put("status", "success");
         response.put("message", "Post deleted successfully");
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId, HttpSession session) {
+        SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "status", "error",
+                    "error", "You do not have permission to like this post"
+            ));
+        }
+        ReactionCount rc = postReactionService.saveReaction(postId,loginMember.getId(), ReactionType.LIKE);
+
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "likeCount", rc.getLikes(),
+                "dislikeCount", rc.getDislikes()
+        ));
+    }
+    @PostMapping("/{postId}/dislike")
+    public ResponseEntity<Map<String, Object>> dislikePost(@PathVariable Long postId, HttpSession session) {
+        SessionMember loginMember = (SessionMember) session.getAttribute("loginMember");
+        if (loginMember == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                    "status", "error",
+                    "error", "You do not have permission to like this post"
+            ));
+        }
+        ReactionCount rc = postReactionService.saveReaction(postId,loginMember.getId(), ReactionType.DISLIKE);
+
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "likeCount", rc.getLikes(),
+                "dislikeCount", rc.getDislikes()
+        ));
     }
 }

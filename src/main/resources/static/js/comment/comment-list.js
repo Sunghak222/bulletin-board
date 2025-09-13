@@ -29,21 +29,17 @@ export function displayCommentList() {
                 entity.className = 'mb-3 pb-3 border-bottom position-relative';
                 entity.id = `comment-${comment.id}`;
 
-// 댓글 본문
                 let contentDiv = document.createElement('p');
                 contentDiv.className = 'mb-1';
-                contentDiv.textContent = comment.content;
-
-// 작성자 및 날짜
+                contentDiv.innerHTML = comment.content.replace(/\n/g, '<br>');
+                
                 let meta = document.createElement('small');
                 meta.className = 'text-muted';
                 meta.innerHTML = `<strong>${comment.authorName}</strong> · ${comment.createdAt.replace('T', ' ').substring(0, 16)}`;
 
-// 버튼 영역 (Edit/Delete 우측 상단 배치)
                 let actionDiv = document.createElement('div');
-                actionDiv.className = 'position-absolute top-0 end-0 d-flex gap-1'; // Changed
+                actionDiv.className = 'position-absolute top-0 end-0 d-flex gap-1';
 
-// append
                 entity.appendChild(contentDiv);
                 entity.appendChild(meta);
                 entity.appendChild(actionDiv);

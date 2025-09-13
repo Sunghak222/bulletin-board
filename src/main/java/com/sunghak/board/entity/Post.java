@@ -15,6 +15,9 @@ public class Post extends BaseTimeEntity {
     @JoinColumn(name = "author_id")
     private Member author;
 
+    @Column(nullable = false)
+    private Long views = 0L;
+
     public Post() {
     }
 
@@ -49,5 +52,9 @@ public class Post extends BaseTimeEntity {
 
     public void setAuthor(Member author) {
         this.author = author;
+    }
+
+    public Long getViews() {
+        return views;
     }
 }

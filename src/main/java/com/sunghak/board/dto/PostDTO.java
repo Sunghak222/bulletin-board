@@ -12,6 +12,9 @@ public class PostDTO {
     private Long authorId;
     private String authorName;
     private LocalDateTime createdAt;
+    private Long views;
+    private long likeCount;
+    private long disikeCount;
 
     public PostDTO(Post post) {
         this.id = post.getId();
@@ -20,6 +23,7 @@ public class PostDTO {
         this.authorId = post.getAuthor().getId();
         this.authorName = post.getAuthor().getName();
         this.createdAt = post.getCreatedAt();
+        this.views = post.getViews();
     }
 
     public Long getId() {
@@ -44,5 +48,9 @@ public class PostDTO {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public Long getViews() {
+        return views;
     }
 }

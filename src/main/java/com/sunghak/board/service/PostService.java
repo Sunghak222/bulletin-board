@@ -1,5 +1,6 @@
 package com.sunghak.board.service;
 
+import com.sunghak.board.dto.PostDTO;
 import com.sunghak.board.entity.Post;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface PostService {
     Post findById(Long id);
     List<Post> findAll();
     void delete(Long id);
+    void incrementViews(Long postId);
+    PostDTO getDetailAndMaybeIncrementViews(Long id, boolean shouldIncrement);
 }
