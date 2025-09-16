@@ -38,7 +38,7 @@ public class CommentApiController {
     }
 
     @PostMapping("/posts/{postId}/comments")
-    public ResponseEntity<Map<String, Object>> createComment(@RequestBody CommentCreateRequest request,
+    public ResponseEntity<Map<String, Object>> createComment(@RequestBody CommentCreateRequest req,
                                                              @PathVariable Long postId,
                                                              HttpSession session) {
 
@@ -51,16 +51,9 @@ public class CommentApiController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
         }
 
-        Member member = memberService.findById(loginMember.getId());
-        Post post = postService.findById(postId);
+        Comment written = commentService.write(postId, loginMember.getId(), req.getContent(), req.getParentId());
 
-        Comment comment = new Comment();
-        comment.setContent(request.getContent());
-        comment.setPost(post);
-        comment.setAuthor(member);
-
-        commentService.save(comment);
-        CommentDTO commentDTO = new CommentDTO(comment);
+        CommentDTO commentDTO = new CommentDTO(written);
 
         response.put("status", "success");
         response.put("message", "Comment Created Successfully");
@@ -113,7 +106,7 @@ public class CommentApiController {
 
     @GetMapping("/posts/{postId}/comments")
     public ResponseEntity<Map<String, Object>> getCommentsByPost(@PathVariable Long postId) {
-        List<Comment> comments = commentService.findByPostId(postId);
+        List<Comment> comments = commentService.getSortedComments(postId);
         List<CommentDTO> result = comments.stream()
                 .map(CommentDTO::new)
                 .toList();

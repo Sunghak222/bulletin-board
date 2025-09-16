@@ -8,9 +8,10 @@ import java.util.List;
 public interface CommentService {
 
     Comment save(Comment comment);
+    Comment write(Long postId, Long authorId, String content, Long parentId);
     Comment findById(Long id);
     List<Comment> findByPostId(Long postId);
     List<Comment> findAll();
     void delete(Long id);
-    Comment update(Comment comment);
+    List<Comment> getSortedComments(Long postId);
 }

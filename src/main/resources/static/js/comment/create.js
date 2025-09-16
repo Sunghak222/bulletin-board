@@ -1,3 +1,5 @@
+import {addReplyButton} from "./comment-list.js";
+
 export function createComment() {
 
     const params = new URLSearchParams(window.location.search);
@@ -27,13 +29,16 @@ export function createComment() {
 import { isLogined, getLoginMember } from '/js/auth/auth.js';
 import { addEditButton, addDeleteButton } from '/js/comment/comment-list.js';
 
-function appendNewComment(comment) {
+export function appendNewComment(comment) {
     const divPost = document.getElementById('comment-list');
 
     const entity = document.createElement('li');
     entity.className = 'mb-3 pb-3 border-bottom position-relative';
     entity.id = `comment-${comment.id}`;
-
+    if (comment.parentId != null) {
+        entity.classList.add('ms-4');
+        entity.dataset.parentId = String(comment.parentId);
+    }
     const contentDiv = document.createElement('p');
     contentDiv.className = 'mb-1';
     contentDiv.textContent = comment.content;
@@ -48,8 +53,21 @@ function appendNewComment(comment) {
     entity.appendChild(contentDiv);
     entity.appendChild(meta);
     entity.appendChild(actionDiv);
-    divPost.appendChild(entity);
 
+    if (comment.parentId == null) {
+        divPost.appendChild(entity);
+        entity.dataset.parentId = String(comment.parentId);
+    }
+    else {
+        const parent = document.getElementById(`comment-${comment.parentId}`);
+        let insertPos = parent;
+        let curr = parent.nextElementSibling;
+        while (curr != null) {
+            insertPos = curr;
+            curr = curr.nextElementSibling;
+        }
+        divPost.insertBefore(entity, insertPos.nextSibling);
+    }
     isLogined().then(loggedIn => {
         if (!loggedIn) return;
         getLoginMember().then(loginMember => {
@@ -58,5 +76,6 @@ function appendNewComment(comment) {
                 addDeleteButton(comment, actionDiv);
             }
         });
+        if (comment.parentId == null) addReplyButton(comment,actionDiv);
     });
 }

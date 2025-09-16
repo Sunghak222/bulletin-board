@@ -15,4 +15,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Query("delete from Comment c where c.post.id = :postId")
     int deleteByPostId(@Param("postId") Long postId);
+
+    @Query("select c from Comment c where c.post.id = :postId order by c.createdAt asc")
+    List<Comment> findAllByPostIdOrderByCreatedAt(Long postId);
 }

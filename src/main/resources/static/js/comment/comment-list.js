@@ -1,5 +1,6 @@
 import { isLogined, getLoginMember } from '/js/auth/auth.js';
 import { deleteComment } from '/js/comment/delete.js';
+import {appendNewComment} from "./create.js";
 
 export function displayCommentList() {
     const params = new URLSearchParams(window.location.search);
@@ -23,21 +24,36 @@ export function displayCommentList() {
             divPost.innerHTML = '';
             let comments = data.comments;
 
-            for (let i = 0; i < comments.length; i++) {
-                let comment = comments[i];
-                let entity = document.createElement('li');
+            const byId = new Map(); //{CommentId : Comment Object]
+            const childrenMap = new Map(); //{parentId : childId}
+            const roots = []; // root comments
+
+            for (const c of comments) {
+                byId.set(c.id, c);
+                const key = c.parentId ?? 0;
+                if (!childrenMap.has(key)) childrenMap.set(key, []);
+                childrenMap.get(key).push(c);
+            }
+            if (childrenMap.has(0)) {
+                roots.push(...childrenMap.get(0));
+            }
+
+            function renderComment(c, depth=0) {
+                const entity = document.createElement('li');
                 entity.className = 'mb-3 pb-3 border-bottom position-relative';
-                entity.id = `comment-${comment.id}`;
+                if (depth > 0) entity.classList.add('ms-4');
+                entity.id = `comment-${c.id}`;
 
-                let contentDiv = document.createElement('p');
+                const contentDiv = document.createElement('p');
                 contentDiv.className = 'mb-1';
-                contentDiv.innerHTML = comment.content.replace(/\n/g, '<br>');
-                
-                let meta = document.createElement('small');
-                meta.className = 'text-muted';
-                meta.innerHTML = `<strong>${comment.authorName}</strong> · ${comment.createdAt.replace('T', ' ').substring(0, 16)}`;
+                contentDiv.innerHTML = c.content.replace(/\n/g, '<br>');
 
-                let actionDiv = document.createElement('div');
+                const meta = document.createElement('small');
+                meta.className = 'text-muted';
+                const createdAt = c.createdAt.replace('T', ' ').substring(0, 16);
+                meta.innerHTML = `<strong>${c.authorName}</strong> · ${createdAt}`;
+
+                const actionDiv = document.createElement('div');
                 actionDiv.className = 'position-absolute top-0 end-0 d-flex gap-1';
 
                 entity.appendChild(contentDiv);
@@ -48,14 +64,19 @@ export function displayCommentList() {
                 isLogined().then(loggedIn => {
                     if (!loggedIn) return;
                     getLoginMember().then(loginMember => {
-                        if (loginMember && loginMember.id === comment.authorId) {
-                            addEditButton(comment, contentDiv, actionDiv);
-                            addDeleteButton(comment, actionDiv);
+                        if (loginMember && loginMember.id === c.authorId) {
+                            addEditButton(c, contentDiv, actionDiv);
+                            addDeleteButton(c, actionDiv);
+                        }
+                        if (c.parentId == null) {
+                            addReplyButton(c, actionDiv);
                         }
                     });
                 });
-
+                const children = childrenMap.get(c.id) || [];
+                for (const child of children) renderComment(child, depth + 1);
             }
+            for (const root of roots) renderComment(root, 0);
         })
 }
 
@@ -124,4 +145,65 @@ export function addDeleteButton(comment, actionDiv) {
         deleteComment(comment.id)
     });
     actionDiv.appendChild(deleteButton);
+}
+
+function openReplyForm(parentId) {
+    const parentLi = document.getElementById(`comment-${parentId}`);
+
+    const formDiv = document.createElement('div');
+    formDiv.id = `reply-form-${parentId}`;
+    formDiv.className = 'mt-2';
+
+    const textarea = document.createElement('textarea');
+    textarea.className = 'form-control mb-2';
+    textarea.rows = 2; //height of the txtarea
+    textarea.placeholder = 'Reply here';
+
+    const submitBtn = document.createElement('button');
+    submitBtn.className = 'btn btn-sm btn-primary';
+    submitBtn.textContent = 'Send';
+
+    submitBtn.onclick = () => {
+        const content = textarea.value.trim();
+        if (!content) {
+            alert("The comment is blank.");
+            return;
+        }
+
+        const postId = new URLSearchParams(window.location.search).get("id");
+
+        fetch(`/api/posts/${postId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                content: content,
+                parentId: parentId
+            })
+        })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === "success") {
+                    appendNewComment(data.comment);
+                    formDiv.remove();
+                } else {
+                    alert("Reply Comment Failed: " + (data.error ?? 'unknown'));
+                }
+            })
+    }
+
+    formDiv.appendChild(textarea);
+    formDiv.appendChild(submitBtn);
+
+    parentLi.appendChild(formDiv);
+}
+export function addReplyButton(comment, actionDiv) {
+    const replyBtn = document.createElement('button');
+    replyBtn.innerText = 'Reply';
+    replyBtn.className = 'btn btn-sm btn-outline-secondary me-1';
+
+    replyBtn.onclick = () => openReplyForm(comment.id);
+
+    actionDiv.append(replyBtn);
 }
