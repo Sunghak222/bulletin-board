@@ -4,7 +4,7 @@ A simple bulletin board web application built with Spring Boot.
 This project focuses on understanding backend web application structure, MVC patterns, and database interaction using JPA.
 
 ![Post Detail](img/Post.png)
-![Main Page](img/Main Page.png)
+![Main Page](img/Main-Page.png)
 
 ---
 
